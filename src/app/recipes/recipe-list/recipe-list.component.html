@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-xs-12">
+        <button class="btn btn-success">New Recipe</button>
+    </div>
+</div>
+
+<hr>
+
+<div class="row">
+    <div class="col-xs-12">
+        <!-- ngFor replica il componente app-recipe-item per ogni ricetta -->
+        <!-- il property binding di recipe userà l'iterazione recipeElement del loop -->
+        <app-recipe-item
+            *ngFor="let recipeElement of recipes"
+            [recipe]="recipeElement"
+        ></app-recipe-item>
+    </div>
+</div>
