@@ -1,0 +1,58 @@
+App Planning - Recipe Book with Shopping List
+
+
+Intro
+
+- sezione ricette
+
+	- gestione ricette
+	- vederle nel dettaglio
+	- push di ingredienti direttamente nella sezione lista
+
+
+- sezione spesa
+
+	- gestione lista
+	- ricevere ingredienti da sezione ricetta
+
+
+
+---
+
+
+
+Struttura app - Pianificare feature componenti di cui ho bisogno
+
+- ROOT COMPONENT: la sua unica responsabilità deve essere il contenimento dell'app, non deve avere logiche proprie
+
+ 	- Header (Componente): è bene che sia un componente a sé stante (propria logica interna, attiverà le attività di routine e quindi navigazione tra le due sezioni)
+		
+		- navigazione tra le due sezioni
+		- funzione memorizzazione delle ricette
+
+
+	- Shopping List (Feature)
+		
+		- Shopping List (Componente): conserva i dati della lista, elenco complessivo
+			
+			- Shopping List Edit(Componente nested): strumento di gestione lista (input field, button: ha senso che sia un componente a parte perché ha una propria logica)
+
+
+	- Recipe Book (Feature)
+
+		- Recipe List (Componente): mostra la lista di ricette
+		
+			- Recipe Item(Componente): ricetta individuale con le proprie info base
+			
+				- Recipe Detail(Componente): area di info approfondite per ogni ricetta
+
+
+
+
+---
+
+2. Quali modelli userò? (Dati) e metterli in una propria classe così da avere un tipo da poter usare con chiara interfaccia che descrive com'è fatto il dato così da poter far comunicare i componenti facilmente
+
+Interfacce:
+Rappresentazione degli ingredienti --> interfaccia (nome, quantità ecc)
+Ricetta 

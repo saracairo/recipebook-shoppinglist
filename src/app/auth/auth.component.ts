@@ -1,0 +1,127 @@
+import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { AuthResponseData, AuthService } from "./auth.service";
+import { Observable, Subscription } from "rxjs";
+import { Router } from "@angular/router";
+import { AlertComponent } from "../shared/alert/alert.component";
+import { PlaceholderDirective } from "../shared/placeholder.directive";
+
+@Component({
+    selector: 'app-auth',
+    templateUrl: './auth.component.html',
+    styleUrls: ['./auth.component.css']
+})
+export class AuthComponent implements OnInit {
+    // dichiarazione variabili modalità che serviranno da chiave per gestire le azioni utente in base alle condizioni rappresentate - proprietà helper
+    isLoginMode = true;
+    authForm!: FormGroup;
+    isLoading = false; // chiave per spinner
+    error: string = '';
+
+/* ----- creazione programmatica componente ()
+    // proprietà utile ad esercizio di creazione dinamica manuale componente;
+    // ottenere accesso alla direttiva appPlaceholder usata nel template:
+    @ViewChild(PlaceholderDirective) alertHost: PlaceholderDirective; // tramite ViewChild si passa un selettore, in questo caso non il nome di una local reference ma un tipo esistente nel template, trovando il primo elemento che corrisponde alla direttiva
+
+    private closeSub: Subscription;
+----- */
+
+
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private compFactRes: ComponentFactoryResolver
+    ) { }
+
+    ngOnInit(): void {
+        this.createForm();
+    }
+
+    createForm() {
+        this.authForm = new FormGroup({
+            'email': new FormControl('', [Validators.required, Validators.email]),
+            'password': new FormControl('', [Validators.required, Validators.minLength(6)]),
+        })
+    }
+
+    // metodo eseguibile dall'interfaccia per cambiare modalità di autenticazione
+    onSwitchMode() {
+        this.isLoginMode = !this.isLoginMode; // rovesciamento dinamico del valore: se al momento della chiamata è false, diventa true e viceversa
+    }
+
+    onSubmit(form: FormGroup) {
+        // chiamata authService
+        if (!form.valid) {
+            return; // rende la chiamata infattibile anche se l'utente riabilita il button manualmente, o comunque fallisce in backand se riesce in qualche modo a fare submit
+        }
+
+        // definizione variabili che poi vengono passate al metodo signup() di authService
+        const email = form.value.email;
+        const password = form.value.password;
+
+        let authObs: Observable<AuthResponseData>; 
+        // l'observable che la variabile authObs conserva, cambierà in base alle condizioni definite nel seguente metodo if; laa logica di sottoscrizione che le due modalità devono eseguire è la stessa, per cui sarà eseguita in seguito in un blocco a parte (usando la variabile e il suo valore dinamico), dopo l'if-else statement
+
+        this.isLoading = true; // appare lo spinner
+
+        if (this.isLoginMode) {
+            // entra in modalità LOGIN
+            authObs = this.authService.login(email, password);
+        } else {
+            // entra in modalità SIGNUP
+            authObs = this.authService.signup(email, password);
+        }
+
+        authObs.subscribe(
+            resData => {
+                console.log(resData);
+                this.isLoading = false; // scompare lo spinner
+                this.router.navigate(['/recipes']); // evitare la redirezione nel template perché è necessaria logica di autenticazione dietro
+            },
+            errorMessage => {
+                console.log(errorMessage);
+                this.error = errorMessage;
+                // this.showErrorAlert(errorMessage);
+                this.isLoading = false; // scompare lo spinner
+            }
+        );
+
+        // console.log(form.value); // test
+        form.reset();
+    }
+
+    onHandleError() {
+        // reimposta error su null
+        this.error = null;
+        // così, la condizione per mostrare app-alert sarà rimossa
+    }
+
+/* -----
+    // metodo utile ad esercizio di creazione dinamica manuale componente
+    private showErrorAlert(message: string) {
+        // creazione dinamica di componente alert
+        // const alertCmp = new AlertComponent(); // è una classe quindi in teoria ne può essere creata un'istanza così, il codice è valido ma non sufficiente in Angular, che per lo scopo dispone della ComponentFactory (da iniettare nel constructor)
+        const alertCmpFactory = this.compFactRes.resolveComponentFactory(
+            AlertComponent
+        ); // non è istanza ma passaggio di tipo
+        // alertCmpFactory è un oggetto che sa come creare AlertComponent, e da qui si può creare il componente completo;
+        // il metodo resolveComponentFactory restituisce una ComponentFactory, precisamente un AlertComponentFactory
+            const hostViewContainerRef = this.alertHost.viewContainerRef; // conservato un riferimento alla viewContainerRef in hostViewContainerRef
+            hostViewContainerRef.clear(); // cancella tutto quel che è stato reso in precedenza prima dic reare qualcosa di nuovo
+            // ViewContainerRef non sono solo coordinate: è un oggetto che permette di interagire col DOM lì dov'è stato posizionato nel template
+
+            const componentRef = hostViewContainerRef.createComponent(alertCmpFactory); // crea il componente 
+            componentRef.instance.message = message; // dà accesso all'istanza del componente creato
+            this.closeSub = componentRef.instance.close.subscribe(() => {
+                this.closeSub.unsubscribe();
+                hostViewContainerRef.clear()
+            }); // eccezione l'uso di subscribe()
+    }
+
+    ngOnDestroy(): void {
+        if(this.closeSub) {
+            this.closeSub.unsubscribe();
+        }
+    }
+----- */
+}

@@ -1,8 +1,22 @@
 <div class="row">
     <div class="col-md-5">
+        <!-- <app-recipe-list
+            (recipeWasSelected)="selectedRecipe = $event"
+        ></app-recipe-list> $event si riferisce ai dati passati tramite evento -->
         <app-recipe-list></app-recipe-list>
     </div>
     <div class="col-md-7">
-        <app-recipe-detail></app-recipe-detail>
+        <!--
+        <app-recipe-detail
+            *ngIf="selectedRecipe; else infoText"
+            [recipe]="selectedRecipe"
+        ></app-recipe-detail> ngIf imposta la condizione di costruzione del template soltanto se selectedRecipe = true;
+        la condizione else indica la local reference che mostra un template con paragrafo alternativo, che appare se la condizione di ngIf = false
+        <ng-template #infoText>
+            <p>Please select a Recipe.</p>
+        </ng-template>
+        -->
+
+        <router-outlet></router-outlet>
     </div>
 </div>

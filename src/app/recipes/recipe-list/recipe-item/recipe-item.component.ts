@@ -8,6 +8,19 @@ import { Recipe } from '../../recipe.model';
 })
 export class RecipeItemComponent {
 
-  @Input() recipe!: Recipe; // non viene definita qui perché il valore (la ricetta) sarà ricevuta dall'esterno (cosa resa possibile dal decoratore @Input, che ne renderà possibile il binding fuori dal componente)
+  @Input() recipe!: Recipe; // non viene definita qui perché il valore (la ricetta) sarà ricevuta dall'esterno (cosa resa possibile dal decoratore @Input, che ne renderà possibile il binding fuori dal componente);
+  // tramite ngFor + riferimento a questa proprietà, il componente parent looperà tutte le ricette presenti di tipo recipe
 
+  // @Output() recipeSelected = new EventEmitter<void>(); // non conterrà informazioni, non si passerà da qui la ricetta perché le info sono già prese dal for-loop di ngFor
+  
+  @Input() index!: number;
+
+  constructor(
+    // private recipeService: RecipeService
+  ) { }
+
+  // onSelected() {
+  //   this.recipeService.recipeSelected.emit(this.recipe);
+  // }
 }
+  

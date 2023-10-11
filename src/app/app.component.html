@@ -1,11 +1,13 @@
-<app-header (featureSelected)="onNavigate($event)"></app-header>
+<app-header></app-header>
 <!-- AppComponent è parent di HeaderComponent, così dal suo tag espongo la proprietà evento featureSelected ed eseguo il metodo onNavigate(), interessato ai dati ricevuti da featureSelected, a cui ho accesso attraverso $event (nome usato nel template per avere accesso a qualsiasi dato cbe un evento passa) -->
 <div class="container">
   <div class="row">
     <div class="col-mid-12">
-      <!-- uso di ngIf per determinare quale feature verrà mostrata e in base a quali condizioni: -->
-      <app-recipes *ngIf="loadedFeature === 'recipe'"></app-recipes>
-      <app-shopping-list *ngIf="loadedFeature !== 'recipe' "></app-shopping-list>
+      <!-- alternativa senza router-outlet: uso di ngIf per determinare quale feature verrà mostrata e in base a quali condizioni: -->
+      <!-- <app-recipes *ngIf="loadedFeature === 'recipe'"></app-recipes>
+      <app-shopping-list *ngIf="loadedFeature !== 'recipe' "></app-shopping-list> -->
+
+      <router-outlet></router-outlet>
     </div>
   </div>
 </div>

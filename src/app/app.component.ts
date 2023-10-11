@@ -1,16 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
+import { LoggingService } from './logging.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'recipebook-shoppinglist';
 
-  loadedFeature = 'recipe'; // inizialmente il valore sarà recipe e quindi impostato sulla feature Recipe
+  constructor(
+    private authService: AuthService,
+    private loggingService: LoggingService
+  ) { }
 
-  onNavigate(feature: string) {
-    this.loadedFeature = feature; // riceverà la feature ricevuta come argomento
+  ngOnInit(): void {
+    this.authService.autoLogin();
+    this.loggingService.printLog('Hello from the AppComponent ngOnInit!')
   }
+
 }
